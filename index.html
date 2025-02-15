@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mnemonica Top Card Calculator</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            padding: 20px; 
+            position: relative; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+        }
+        
+        .input-container { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            justify-content: center;
+            width: 100%; 
+            gap: 20px;
+        }
+
+        .random-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            font-size: 40px;
+        }
+
+        input { 
+            margin: 10px; 
+            padding: 8px; 
+            width: 120px; 
+            text-transform: uppercase; 
+            font-size: 30px; 
+            text-align: center; 
+        }
+
+        button { 
+            padding: 10px 20px; 
+            background-color: lightgray; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 18px; 
+            margin-top: 20px; 
+        }
+
+        #result { 
+            font-weight: normal; 
+            font-size: 24px; 
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Mnemonica Card Trick</h2>
+
+    <div class="input-container">
+        <div class="random-info">
+            <div id="randomCard"></div>
+            <div id="randomNumber"></div>
+        </div>
+        <input type="number" id="userTopCard" placeholder="Your Top Card">
+    </div>
+
+    <button id="calculateButton">Submit</button>
+    <p id="result"></p>
+
+    <script>
+        const mnemonicaStack = {
+            1: "4C", 2: "2H", 3: "7D", 4: "3C", 5: "4H", 6: "6D", 7: "AS", 8: "5H", 9: "9S", 
+            10: "2S", 11: "QH", 12: "3D", 13: "QC", 14: "8H", 15: "6S", 16: "5S", 17: "9H", 
+            18: "KC", 19: "2D", 20: "JH", 21: "3S", 22: "8S", 23: "6H", 24: "XC", 25: "5D", 
+            26: "KD", 27: "2C", 28: "3H", 29: "8D", 30: "5C", 31: "KS", 32: "JD", 33: "8C", 
+            34: "XS", 35: "KH", 36: "JC", 37: "7S", 38: "XH", 39: "AD", 40: "4S", 41: "7H", 
+            42: "4D", 43: "AC", 44: "9C", 45: "JS", 46: "QD", 47: "7C", 48: "QS", 49: "XD", 
+            50: "6C", 51: "AH", 52: "9D"
+        };
+
+        let firstClick = true;
+        let MEM = "";
+        let SNN = 0;
+
+        function getCardPosition(MEM) {
+            return Object.keys(mnemonicaStack).find(key => mnemonicaStack[key] === MEM) || null;
+        }
+
+        function computeTopCard(MEM_position, SNN) {
+            if (MEM_position > SNN) return (MEM_position - SNN) + 1;
+            if (SNN > MEM_position) return 53 - (SNN - MEM_position);
+            return SNN;
+        }
+
+        function generateRandomCardAndNumber() {
+            // Random card from the mnemonica stack
+            const randomCardIndex = Math.floor(Math.random() * 52) + 1;
+            const randomCard = mnemonicaStack[randomCardIndex];
+
+            // Random number between 1 and 52
+            const randomNumber = Math.floor(Math.random() * 52) + 1;
+
+            // Display the random card and number
+            document.getElementById("randomCard").innerText = `Card: ${randomCard}`;
+            document.getElementById("randomNumber").innerText = `Number: ${randomNumber}`;
+
+            // Store the values for evaluation
+            MEM = randomCard;
+            SNN = randomNumber;
+        }
+
+        document.getElementById("calculateButton").addEventListener("click", function() {
+            let userTopCard = document.getElementById("userTopCard").value.trim();
+
+            if (!userTopCard || isNaN(userTopCard) || userTopCard < 1 || userTopCard > 52) {
+                alert("Please enter a valid number between 1 and 52.");
+                return;
+            }
+            userTopCard = parseInt(userTopCard);
+
+            let MEM_position = getCardPosition(MEM);
+            let correctTopCard = computeTopCard(MEM_position, SNN);
+
+            if (userTopCard === correctTopCard) {
+                document.getElementById("result").innerText = "Correct! Well done!";
+            } else {
+                document.getElementById("result").innerText = `Incorrect. The correct top card was: ${correctTopCard}`;
+            }
+
+            // Reset for the next round
+            firstClick = !firstClick;
+            if (firstClick) {
+                generateRandomCardAndNumber();
+                document.getElementById("userTopCard").value = "";
+                document.getElementById("result").innerText = "";
+            }
+        });
+
+        // Generate the initial random card and number when the page loads
+        generateRandomCardAndNumber();
+    </script>
+
+</body>
+</html>
