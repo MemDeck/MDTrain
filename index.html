@@ -61,7 +61,7 @@
 </head>
 <body>
 
-    <h2>Mnemonica Card Trick</h2>
+    <h2></h2>
 
     <div class="input-container">
         <div class="random-info">
@@ -108,8 +108,8 @@
             const randomNumber = Math.floor(Math.random() * 52) + 1;
 
             // Display the random card and number
-            document.getElementById("randomCard").innerText = `Card: ${randomCard}`;
-            document.getElementById("randomNumber").innerText = `Number: ${randomNumber}`;
+            document.getElementById("randomCard").innerText = `${randomCard}`;
+            document.getElementById("randomNumber").innerText = `${randomNumber}`;
 
             // Store the values for evaluation
             MEM = randomCard;
@@ -129,9 +129,9 @@
             let correctTopCard = computeTopCard(MEM_position, SNN);
 
             if (userTopCard === correctTopCard) {
-                document.getElementById("result").innerText = "Correct! Well done!";
+                document.getElementById("result").innerText = "Correct";
             } else {
-                document.getElementById("result").innerText = `Incorrect. The correct top card was: ${correctTopCard}`;
+                document.getElementById("result").innerText = `Incorrect. Top card is: ${correctTopCard}`;
             }
 
             // Reset for the next round
